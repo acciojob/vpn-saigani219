@@ -31,6 +31,8 @@ public class ConnectionServiceImpl implements ConnectionService {
         //If the connection can not be made (As user does not have a serviceProvider or serviceProvider does not have given country, throw "Unable to connect" exception.
         //Else, establish the connection where the maskedIp is "updatedCountryCode.serviceProviderId.userId" and return the updated user. If multiple service providers allow you to connect to the country, use the service provider having smallest id.
         User user = userRepository2.findById(userId).get();
+        if(user.getConnected() == true)
+            throw new Exception("Already connected");
         String userCountry = user.getOriginalCountry().getCode();
         String givenCountry = "";
         if(countryName.equals("IND") || countryName.equals("ind"))
@@ -43,17 +45,17 @@ public class ConnectionServiceImpl implements ConnectionService {
             givenCountry = "004";
         else if(countryName.equals("JPN") || countryName.equals("jpn"))
             givenCountry = "005";
-        if(user.getConnected() == true)
-            throw new Exception("Already connected");
-        else if(userCountry.equals(givenCountry)){
+        if(userCountry.equals(givenCountry)){
             return user;
         }
         else {
             if(checkSubscribed(user, givenCountry) == -1)
                 throw new Exception("Unable to connect");
-            user.setConnected(true);
-            String newIp = givenCountry + "." + checkSubscribed(user, givenCountry) + "." + userId;
-            user.setMaskedIp(newIp);
+            else {
+                user.setConnected(true);
+                String newIp = givenCountry + "." + checkSubscribed(user, givenCountry) + "." + userId;
+                user.setMaskedIp(newIp);
+            }
         }
         userRepository2.save(user);
         return user;
@@ -68,6 +70,7 @@ public class ConnectionServiceImpl implements ConnectionService {
             for(Country country : serviceProvider.getCountryList()){
                 if(country.getCode().equals(givenCountry)){
                     serviceProviderIds.add(serviceProvider.getId());
+                    break;
                 }
             }
         }
@@ -81,10 +84,10 @@ public class ConnectionServiceImpl implements ConnectionService {
         User user = userRepository2.findById(userId).get();
         if(user.getMaskedIp() == null)
             throw new Exception("Already disconnected");
-        user.setMaskedIp(null);
-        user.setConnected(false);
-        userRepository2.save(user);
-        return user;
+            user.setMaskedIp(null);
+            user.setConnected(false);
+            userRepository2.save(user);
+            return user;
     }
     @Override
     public User communicate(int senderId, int receiverId) throws Exception {

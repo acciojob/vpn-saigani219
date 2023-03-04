@@ -25,8 +25,7 @@ public class User {
 	@JoinColumn
 	private List<ServiceProvider> serviceProviderList;
 
-	@OneToOne
-	@JoinColumn
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
 	private Country originalCountry;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

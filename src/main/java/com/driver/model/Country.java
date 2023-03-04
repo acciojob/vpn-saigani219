@@ -18,7 +18,8 @@ public class Country{
 	@JoinColumn
 	private ServiceProvider serviceProvider;
 
-	@OneToOne(mappedBy = "originalCountry", cascade = CascadeType.ALL)
+	@OneToOne
+	@JoinColumn
 	private User user;
 
 	public Country() {
