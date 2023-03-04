@@ -31,7 +31,7 @@ public class ConnectionServiceImpl implements ConnectionService {
         //If the connection can not be made (As user does not have a serviceProvider or serviceProvider does not have given country, throw "Unable to connect" exception.
         //Else, establish the connection where the maskedIp is "updatedCountryCode.serviceProviderId.userId" and return the updated user. If multiple service providers allow you to connect to the country, use the service provider having smallest id.
         User user = userRepository2.findById(userId).get();
-        String userCountry = user.getCountry().getCode();
+        String userCountry = user.getOriginalCountry().getCode();
         String givenCountry = "";
         if(countryName.equals("IND") || countryName.equals("ind"))
             givenCountry = "001";
@@ -97,8 +97,8 @@ public class ConnectionServiceImpl implements ConnectionService {
         //If communication can not be established due to any reason, throw "Cannot establish communication" exception
         User sender = userRepository2.findById(senderId).get();
         User receiver = userRepository2.findById(receiverId).get();
-        String senderCode = sender.getCountry().getCode();
-        String receiverCode = receiver.getCountry().getCode();
+        String senderCode = sender.getOriginalCountry().getCode();
+        String receiverCode = receiver.getOriginalCountry().getCode();
         if(!receiver.getConnected() && receiverCode.equals(senderCode)){
            return sender;
         }
