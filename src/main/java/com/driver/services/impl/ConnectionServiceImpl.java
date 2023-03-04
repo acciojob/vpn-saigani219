@@ -52,7 +52,7 @@ public class ConnectionServiceImpl implements ConnectionService {
             if(checkSubscribed(user, givenCountry) == -1)
                 throw new Exception("Unable to connect");
             user.setConnected(true);
-            String newIp = givenCountry + checkSubscribed(user, givenCountry) + userId;
+            String newIp = givenCountry + "." + checkSubscribed(user, givenCountry) + "." + userId;
             user.setMaskedIp(newIp);
         }
         userRepository2.save(user);
