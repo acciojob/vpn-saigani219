@@ -111,7 +111,7 @@ public class ConnectionServiceImpl implements ConnectionService {
             if(checkSubscribed(sender, receiverCode) == -1)
                 throw new Exception("Cannot establish communication");
             sender.setConnected(true);
-            String newIp = receiverCode + checkSubscribed(sender, receiverCode) + senderId;
+            String newIp = receiverCode + "." + checkSubscribed(sender, receiverCode) + "." + senderId;
             sender.setMaskedIp(newIp);
             userRepository2.save(sender);
             return sender;
@@ -121,11 +121,11 @@ public class ConnectionServiceImpl implements ConnectionService {
             if(checkSubscribed(sender, currCountryCode) == -1)
                 throw new Exception("Cannot establish communication");
             sender.setConnected(true);
-            String newIp = receiverCode + checkSubscribed(sender, currCountryCode) + senderId;
+            String newIp = receiverCode + "." + checkSubscribed(sender, currCountryCode) + "." + senderId;
             sender.setMaskedIp(newIp);
             userRepository2.save(sender);
             return sender;
         }
-        return sender;
+        return null;
     }
 }
